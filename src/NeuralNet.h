@@ -2,6 +2,8 @@
 #define CPPNN_LIBRARY_H
 
 #include <vector>
+#include <cmath>
+
 
 #include "Perceptron.h"
 #include "LayerDefinition.h"
@@ -21,6 +23,10 @@ namespace PyreNet {
 
         // Predict output
         std::vector<double> predict(const std::vector<double>&);
+        
+        
+        void backpropagate(const std::vector<double> &input,const std::vector<double> &target);
+
 
         // Mutate weightings in the neural net by an interval amount.
         // Applies to all layers by default.
@@ -41,6 +47,7 @@ namespace PyreNet {
 
     private:
         int inputSize;
+        double learningrate=0.01;
         std::vector<Layer> layers;
     };
 }

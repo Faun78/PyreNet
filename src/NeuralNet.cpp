@@ -33,6 +33,36 @@ namespace PyreNet {
         return layerData;
     }
 
+    //  Bacpropagationsw
+    void NeuralNet::backpropagate(const std::vector<double> &input,const std::vector<double> &target) {
+        const std::vector<double> output=predict(input);
+        std::vector<double> outputerror;
+        double totalerror=0;
+        int to= this->layers.size()-1;
+
+        for (int i = 0; i < target.size(); i++) {
+            totalerror+=0.5*double(std::sqrt(target[i]-output[i])); 
+            outputerror.push_back(0.5*double(std::sqrt(target[i]-output[i])));
+        }
+        std::vector<double> layerData=this->layers[to-1].getValue();
+        std::vector<double> gradient=this->layers[to].decalculate(layerData);
+        
+        if(outputerror.size()!=gradient.size()){
+            return;
+        }
+        for(int j=0;j<gradient.size();j++){
+            double temp11=gradient[j];
+            for(int i=0;i<gradient.size();i++){
+                gradient[j]+=temp11*outputerror[i];
+            }
+            gradient[j]*=this->learningrate;
+        }
+        layerData=this->layers[to-2].getValue();
+        std::vector<double> gradient2=this->layers[to].decalculate(layerData);
+        gradient2
+    }
+
+
     // Mutators
 
     void NeuralNet::mutate_uniform(double lower, double upper, int layer) {
@@ -83,7 +113,7 @@ namespace PyreNet {
         is >> nn.inputSize;
         int layerSize;
         is >> layerSize;
-        nn.layers.resize(layerSize, Layer(0, 0, nullptr));
+        nn.layers.resize(layerSize, Layer(0, 0, nullptr,nullptr));
         for (Layer& l : nn.layers)
             is >> l;
         return is;

@@ -12,16 +12,25 @@
 namespace PyreNet {
 // Constructor
 
-    Layer::Layer(int size, int prevSize, Activation *activation) {
+    Layer::Layer(int size, int prevSize, Activation *activation, Activation *deactivation) {
         this->nodes.reserve(size);
         for (int i = 0; i < size; i++) {
             this->nodes.emplace_back(prevSize);
         }
         this->activation = activation;
+        this->deactivation = deactivation;
+
     }
 
 // Main Layer Logic
-
+    std::vector<double> Layer::getValue() {
+        std::vector<double> ans;
+        ans.reserve(this->nodes.size());
+        for (const Perceptron &p : this->nodes) {
+            ans.push_back(p.getValue());
+        }
+        return ans;
+    }
     std::vector<double> Layer::calculate(const std::vector<double> &input) {
         LayerThreadPool* layerThreadPool = LayerThreadPool::getInstance();
         int track = this->nodes.size();
@@ -32,13 +41,27 @@ namespace PyreNet {
         layerThreadPool->waitForTasks(track);
         std::vector<double> ans;
         ans.reserve(this->nodes.size());
-        for (const Perceptron &p : this->nodes) {
-            ans.push_back(p.getValue());
+        
+        return getValue();
+    }
+    
+    std::vector<double> Layer::decalculate(const std::vector<double> &input) {
+        LayerThreadPool* layerThreadPool = LayerThreadPool::getInstance();
+        int track = this->nodes.size();
+        for (Perceptron &p : this->nodes) {
+            LayerThreadPool::LayerQueueJob job(input, p, this->deactivation, track);
+            layerThreadPool->addJob(job);
         }
-        return ans;
+        layerThreadPool->waitForTasks(track);
+        return getValue();
     }
 
 // Mutators
+    void Layer::add(double lower) {
+        for (Perceptron &p : this->nodes) {
+            p.add(lower, upper);
+        }
+    }
 
     void Layer::mutate_uniform(double lower, double upper) {
         for (Perceptron &p : this->nodes) {

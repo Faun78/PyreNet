@@ -10,6 +10,10 @@ namespace PyreNet {
         return (2 / (1 + exp(-2 * input)) - 1);
     }
 
+    const double Tanh::deactivate(double input) {
+        return 1-sqrt(2 / (1 + exp(-2 * input)) - 1);
+    }
+
     const LayerDefinition::activationType Tanh::type() {
         return LayerDefinition::activationType::tanh;
     }

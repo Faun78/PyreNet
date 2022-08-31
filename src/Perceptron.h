@@ -16,6 +16,8 @@ namespace PyreNet {
         explicit Perceptron(int);
 
         void calculate(const std::vector<double> &, Activation *);
+        
+        void decalculate(const std::vector<double> &, Activation *);
 
         double getValue() const;
 

@@ -15,9 +15,13 @@ namespace PyreNet {
     class Layer {
     public:
         // Size of layer, size of previous layer (input to layer), activation function
-        Layer(int, int, Activation *);
+        Layer(int, int, Activation *, Activation *);
 
         std::vector<double> calculate(const std::vector<double> &);
+        std::vector<double> decalculate(const std::vector<double> &);
+        std::vector<double> getValue();
+
+        void Layer::add(const std::vector<double> &);
 
         void mutate_uniform(double, double);
 
@@ -32,6 +36,8 @@ namespace PyreNet {
     private:
         std::vector<Perceptron> nodes;
         Activation* activation;
+        Activation* deactivation;
+
     };
 }
 

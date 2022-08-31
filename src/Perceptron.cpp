@@ -28,6 +28,17 @@ namespace PyreNet {
         weightedSum += 1 * this->weights.back(); // bias term
         this->cachedValue = activation->activate(weightedSum);
     }
+    void Perceptron::decalculate(const std::vector<double> &input, Activation *activation) {
+        if (input.size() != this->inputSize) {
+            throw InvalidInputSize();
+        }
+        double weightedSum = 0;
+        for (int i = 0; i < this->inputSize; i++) {
+            weightedSum += input[i] * this->weights[i];
+        }
+        weightedSum += 1 * this->weights.back(); // bias term
+        this->cachedValue = activation->deactivate(weightedSum);
+    }
 
     void Perceptron::mutate_uniform(double lower, double upper) {
         RandomGenerator *randomGenerator = RandomGenerator::getInstance();

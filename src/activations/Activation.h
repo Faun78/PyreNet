@@ -11,6 +11,8 @@ namespace PyreNet {
     class Activation {
     public:
         virtual const double activate(double) = 0;
+        virtual const double deactivate(double) = 0;
+
         virtual const LayerDefinition::activationType type() = 0;
     };
 }
